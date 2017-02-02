@@ -19,6 +19,18 @@ void printList (Node *head)
     printf("\n");
 }
 
+/* Print reverse of a linked list using recursion
+ * http://www.geeksforgeeks.org/write-a-recursive-function-to-print-reverse-of-a-linked-list/
+ * */
+void printRevList (Node *head)
+{
+    if (head == NULL)   return;
+
+    printRevList (head->next);
+
+    printf("%d ", head->data);
+}
+
 /* Assume ascending order
  * http://www.geeksforgeeks.org/given-a-linked-list-which-is-sorted-how-will-you-insert-in-sorted-way/
  * */
@@ -55,6 +67,27 @@ void buildList (Node **head, int sz)
     }
 
     printList(*head);
+}
+
+/* Assume the list is sorted, remove duplicates from it
+ * http://www.geeksforgeeks.org/remove-duplicates-from-a-sorted-linked-list/
+ * */
+void removeDuplicates (Node **head)
+{
+    Node **cur = head;
+
+    if (*cur == NULL)   return;
+
+    while (*cur && (*cur)->next) {
+        /* duplicate found */
+        if ((*cur)->data == (*cur)->next->data) {
+            Node *temp = (*cur)->next;
+            (*cur)->next = (*cur)->next->next;
+            free(temp);
+        }
+
+        cur = &((*cur)->next);
+    }
 }
 
 /* Return size of a list */
@@ -437,7 +470,7 @@ int main(int c, char *a[])
     int sz = atoi(a[1]);
 
     buildList(&head, sz);
-    //printList(head);
+    //printRevList(head);
 
     //getNth(head, 2);
     //deleteNodeGivenReference(&head, getNth(head, 1));
@@ -450,9 +483,7 @@ int main(int c, char *a[])
     //printList(cloneList(head));
     //buildRandList(&rhead, c);
 
-    Node *head1, *head2;
-    buildList(&head1, 10);
-    buildList(&head2, 5);
-
+    removeDuplicates(&head);
+    printList(head);
     return 1;
 }
