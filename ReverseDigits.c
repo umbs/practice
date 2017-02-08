@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* TODO: This doesn't work for numbers ending in 0's
+ * 1000 --> 0001 */
 int reverseDigits(int in)
 {
     int rev = 0, x = in;
