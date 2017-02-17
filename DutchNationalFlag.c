@@ -48,20 +48,9 @@ void dnf(int *S, int sz, int p) {
     int lo=0, hi=sz-1, lt=lo, gt=hi, i=lo;
 
     while(i <= gt) {
-        // put in subarray 1
-        if(S[i]<piv) {
-            swap(S, lt, i);
-            lt++; i++;
-        }
-        // put in subarray 4
-        else if(S[i]>piv) {
-            swap(S, i, gt);
-            gt--;
-        }
-        // leave elem in subarray 3
-        else {
-            i++;
-        }
+        if(S[i]<piv)        swap(S, lt++, i++); // put in section 1
+        else if(S[i]>piv)   swap(S, i, gt--);   // put in section 4
+        else                i++;    // put in section 2
     }
 
     print(S, sz);
