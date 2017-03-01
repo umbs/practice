@@ -1,14 +1,20 @@
 /*
  * Problems from EPI[1]
  *
- * Template for Binary Trees (not BST). Careful, arrays are indexed from 1
+ * Test if a Binary Tree is balanced, that is, difference in num of children in
+ * left subtree and right subtree are less than or equal 1
  *
  * [1] Elements of Programming Interviews
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <time.h>
+#include <stdbool.h>
+
+#define MIN(X, Y) ((X) < (Y) ? (X) : (Y))
+#define MAX(X, Y) ((X) < (Y) ? (Y) : (X))
 
 typedef struct _node {
     int data;
@@ -52,13 +58,27 @@ bool isLeaf(Node *n) {
     return((n->l==NULL) && (n->r==NULL));
 }
 
+int height(Node *n) {
+    if(n==NULL)    return 0;
+    if(isLeaf(n))   return 1;   // or should it be 0?
+
+    return 1 + MAX(height(n->l), height(n->r));
+}
+
+bool isBalanced(Node *n) {
+    if(n==NULL) return true;
+    if(isBalanced(n->l)==false)  return false;
+    if(isBalanced(n->r)==false)  return false;
+
+    return abs(height(n->l)-height(n->r))<=1;
+}
+
 void buildTree(Node *S, int sz) {
     /* Build Tree */
     for(int i=1; i<=sz; i++) {
         S[i].data = rand()%100;
         S[i].l = S[i].r = S[i].p = NULL;
 
-        /* parent/child pointers */
         if(2*i <= sz) {
             S[i].l = &S[2*i];
             S[2*i].p = &S[i];
@@ -68,10 +88,6 @@ void buildTree(Node *S, int sz) {
             S[i].r = &S[2*i+1];
             S[2*i+1].p = &S[i];
         }
-
-        /* compute level */
-        if(S[i].p)  S[i].level = 1+S[i].p->level;
-        else    S[i].level = 0;
     }
 }
 
@@ -86,10 +102,11 @@ int main(int argc, char *argv[]) {
     }
 
     sz = atoi(argv[1]);
+
     srand(time(NULL));
     buildTree(S, sz);
-
     print(S, sz);
 
+    printf("Is balanced: %d\n", isBalanced(&S[1]));
     return 0;
 }
