@@ -1,6 +1,7 @@
 /*
  * Problems from EPI[1]
- *
+ * 6.4 Given an array with values at i indicating how far to advance from i,
+ * determine if end of the array can be reached from start.
  *
  * [1] Elements of Programming Interviews
  */
@@ -9,6 +10,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <time.h>
+#include <stdbool.h>
 
 #define MIN(X, Y) ((X) < (Y) ? (X) : (Y))
 #define MAX(X, Y) ((X) < (Y) ? (Y) : (X))
@@ -16,6 +18,15 @@
 void print(int *S, int sz) {
     for(int i=0; i<sz; i++) printf("%d ", S[i]);
     printf("\n");
+}
+
+bool canReachEnd(int *S, int sz) {
+    int maxSoFar=0;
+    for (int i=0; i<=maxSoFar && maxSoFar<sz; i++) {
+        maxSoFar = MAX(maxSoFar, S[i]+i);
+    }
+
+    return (maxSoFar >= sz);
 }
 
 int main(int argc, char *argv[]) {
@@ -32,10 +43,11 @@ int main(int argc, char *argv[]) {
 
     srand(time(NULL));
 
-    for (int i=0; i<sz; i++)    S[i] = rand()%10;
+    for (int i=0; i<sz; i++)    S[i] = rand()%sz;
     print(S, sz);
 
     // function call goes here
+    printf("Can reach end: %d\n", canReachEnd(S, sz));
 
     return 0;
 }
