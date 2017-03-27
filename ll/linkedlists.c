@@ -17,6 +17,17 @@ void printList (Node *head)
         head = head->next;
     }
     printf("\n");
+
+#if 0
+    Node **cur = &head;
+    printf("List members: \n");
+    while(*cur) {
+        printf("cur: %p, *cur: %p, data: %d, nxt: %p\n", cur, *cur,
+                (*cur)->data, (*cur)->next);
+        cur = &((*cur)->next);
+    }
+    printf("\n");
+#endif
 }
 
 /* Print reverse of a linked list using recursion
@@ -52,18 +63,18 @@ void sortedInsert(Node **head, int data)
 /* Build a linkedlist of size sz. Members are of type 'int' */
 void buildList (Node **head, int sz)
 {
-    //Node *t = NULL;
-    int data;
+    Node *t = NULL;
+    //int data;
 
     srand(time(NULL));
 
     for (int i=0; i<sz; i++) {
-        //t = malloc(sizeof(Node));
-        //t->data = rand()%100;
-        //t->next = *head;
-        //*head = t;
-        data = rand()%100;
-        sortedInsert(head, data);
+        t = malloc(sizeof(Node));
+        t->data = rand()%100;
+        t->next = *head;
+        *head = t;
+        //data = rand()%100;
+        //sortedInsert(head, data);
     }
 
     printList(*head);
@@ -151,6 +162,43 @@ ret:
     printList(*head);
     return;
 }
+
+/* Delete kth last node
+ * EPI 8.7
+ */
+void deleteKLast(Node **head, int k)
+{
+    Node **cur, *tmp;
+    int sz, idx;
+
+    /* start - boundary conditions */
+    /* invalid args */
+    if(head == NULL || *head == NULL)   return;
+
+    /* list size is small */
+    if((sz=listSize(*head)) < k) return;
+
+    /* list size == k */
+    if(sz==k) {
+        tmp = *head;
+        *head = (*head)->next;
+        free(tmp);
+        return;
+    }
+    /* end - boundary conditions */
+
+    /* sz > k */
+    cur = head;
+
+    /* move 'cur' by (sz-k-1) positions */
+    for(idx=0; idx<sz-k-1; idx++)
+        cur = &((*cur)->next);
+
+    tmp = (*cur)->next;
+    (*cur)->next = (*cur)->next->next;
+    free(tmp);
+}
+
 
 /* Find middle node of a list.
  * TODO: For lists of even size, what is "middle" node? This code gives N/2+1
@@ -472,6 +520,7 @@ int main(int c, char *a[])
     buildList(&head, sz);
     //printRevList(head);
 
+    //sortedInsert(&head, 50);
     //getNth(head, 2);
     //deleteNodeGivenReference(&head, getNth(head, 1));
     //findMiddle(head);
@@ -483,7 +532,8 @@ int main(int c, char *a[])
     //printList(cloneList(head));
     //buildRandList(&rhead, c);
 
-    removeDuplicates(&head);
+    //removeDuplicates(&head);
+    deleteKLast(&head, 5);
     printList(head);
     return 1;
 }
