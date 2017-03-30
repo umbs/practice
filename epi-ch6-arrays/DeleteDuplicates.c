@@ -24,25 +24,15 @@ int cmp(const void *a, const void *b) {
     return (*(int *)a - *(int *)b);
 }
 
-/* Swap two elems of an array */
-void swap(int *S, int i, int j) {
-    int temp = S[i];
-    S[i] = S[j];
-    S[j] = temp;
-}
-
 /* Delete duplicates in an array */
 int dd(int *S, int sz) {
-    int wrt=1;
-    int count=0;
+    int i, cur;
 
-    /* Copy over the duplicates */
-    for (int i=1; i<sz; i++) {
-        if (S[i] == S[i-1]) count++;
-        else S[wrt++] = S[i];
+    for(i=1, cur=0; i<sz; i++) {
+        if(S[cur] != S[i])  S[++cur] = S[i];
     }
 
-    return wrt;
+    return cur+1;
 }
 
 int main(int argc, char *argv[]) {
