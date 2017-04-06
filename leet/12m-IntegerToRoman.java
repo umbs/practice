@@ -1,8 +1,8 @@
 /*
  * 12m Convert an Integer to Roman
  *
- *  I   V   X   L    C     D     M
- *  1   5   10  50   100   500   1000
+ * The input is guaranteed to be between 1 and 3999
+ *
  */
 public class Solution {
     public final int deno[] = { 1,   4,    5,   9,    10,   40,    50,   90,  100,  400,  500, 900, 1000};
