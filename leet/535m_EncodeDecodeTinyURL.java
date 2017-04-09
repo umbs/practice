@@ -7,7 +7,11 @@ public class Solution {
     public Random r = new Random();
 
     public String encode(String longUrl) {
-        int key = r.nextInt();
+        int key;
+
+        // Generate new key
+        while(ht.contains(key=r.nextInt())==true);
+
         if(key<0) key = -key; // only positive ints
         String keyString = Integer.toString(key);
 
