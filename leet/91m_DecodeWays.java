@@ -1,23 +1,30 @@
+/* Got this solution from Discussion forum. I failed after multiple attempts.
+ *
+ * The key insight here is using DP from tail to head (like a bottom up DP).
+ *
+ * */
 public class Solution {
-    
-    public int oneDigit(int s) {
-        return s==0 ? 0 : 1;
-    }
-    
-    public int twoDigits(int s) {
-        return (s>0 && s<27) ? 1 : 0;
-    }
-    
     public int numDecodings(String s) {
-        if(s==null || s.isEmpty())  return 0;
-      
-        int len = s.length();
-        
-        if(len==1)  return oneDigit(Integer.parseInt(s));
-        
-        int a = Integer.parseInt(s.substring(0,1));
-        int b = Integer.parseInt(s.substring(0,2));
-        
-        return oneDigit(a) + twoDigits(b) + numDecodings(s.substring(1, len)) + numDecodings(s.substring(2, len));
+        if(s.isEmpty() || s==null)  return 0;
+
+        int n = s.length();
+        int[] dp = new int[n+1];
+
+        dp[n] = 1;
+        dp[n-1] = s.charAt(n-1)=='0' ? 0 : 1;
+
+        for(int i=n-2; i>=0; i--) {
+            if(s.charAt(i)=='0')    continue;
+            dp[i] = Integer.parseInt(s.substring(i, i+2)) < 27 ?
+                        dp[i+1]+dp[i+2] : dp[i+1];
+        }
+
+        return dp[0];
+    }
+
+    public static void main(String[] a) {
+        Solution S = new Solution();
+        System.out.println(S.numDecodings("11"));
     }
 }
+
