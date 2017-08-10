@@ -1,12 +1,21 @@
+#include <stdio.h>
+#include <stdlib.h>     //srand(), rand()
+#include <limits.h>     // INT_MAX, UINT_MAX etc
+#include <time.h>       // time()
+#include <stdbool.h>    // _Bool, bool, true, false
+
+#define MAX_LIST_SZ 100 // assume linked lists are sz 100, at most
+
+/* Node in a linked list */
+typedef struct _Node {
+    int data;
+    struct _Node *next;
+} Node;
+
 /* All Geeks for Geeks problems on linked-lists */
 /* All reference to 'List' means singly linked list */
 
-#include "linkedlists.h"
-
-#define MAX_LIST_SZ 100
-
 Node *head;
-rNode *rhead;
 
 void printList (Node *head)
 {
@@ -111,13 +120,6 @@ uint32_t listSize (Node *head)
     return sz;
 }
 
-/* Build a binary tree (Not a BST)
- * TODO: Incomplete
- */
-void buildTree (bNode **head, int nElem)
-{
-}
-
 /* Get Nth node of the list
  * http://www.geeksforgeeks.org/write-a-function-to-get-nth-node-in-a-linked-list/
  * */
@@ -130,6 +132,24 @@ Node *getNth(Node *head, int n)
 
     printf("%d node contains data: %d\n", n, (head)?head->data:INT_MAX);
     return head;
+}
+
+// delete first occurance of node with 'data'
+void deleteOnce(Node **head, int data)
+{
+    Node **cur = head;
+
+    while(*cur && (*cur)->data != data) {
+        cur = &((*cur)->next);
+    }
+
+    // end of list, no 'data' found
+    if(*cur == NULL)    return;
+
+    Node *tmp = *cur;
+
+    *cur = (*cur)->next;
+    free(tmp);
 }
 
 /* Delete a node, given it's reference
@@ -408,73 +428,6 @@ Node *cloneList(Node *head)
     return clone;
 }
 
-/* Return a pointer to random node in a list
- * TODO: Make these routines generic (to take Node, rNode or bNode structs
- */
-rNode *randNode(rNode *head)
-{
-    int sz, pos, i;
-    rNode *t;
-
-    if (head == NULL)    return NULL;
-
-    /* count size of list */
-    for (sz=0, t=head; t; sz++, t=t->next);
-
-    /* generate a random position within the list */
-    srand(time(NULL));
-    pos = rand()%sz;
-
-    for (i=0, t=head; i<pos; i++) {
-        t = t->next;
-    }
-
-    return head;
-}
-
-/* TODO:
- * build a linked list with nodes containing random and next pointers
- */
-void buildRandList(rNode **head, int sz)
-{
-    rNode *t = NULL;
-
-    srand(time(NULL));
-    for (int i=0; i<sz; i++) {
-        t = malloc(sizeof(rNode));
-        t->data = rand()%100;
-        t->next = *head;
-        t->rand= randNode(*head);
-        *head = t;
-    }
-
-    t = *head;
-
-    // print the list
-    printf("List members: ");
-    while (t) {
-        printf("%d %d(rand)", t->data, t->rand->data);
-        t = t->next;
-    }
-}
-
-/* Deep copy a linked list. Nodes contain next and random pointer pointing to
- * any other node in list
- *
- * Solution1: Use a Key-Value pair hash map. Key = address of orig node, Value =
- * address of copy. This takes O(N) memory. I don't know how to implement
- * hashmap in C
- *
- * Solution2: Explained in Method2 at this link
- *  http://www.geeksforgeeks.org/a-linked-list-with-next-and-arbit-pointer/
- *
- *  Below code is implementation of this
- */
-Node *cloneListNextRandom(rNode *head)
-{
-    return NULL;
-}
-
 /* Given two lists that intersect at some point (and remainder is common),
  * return the intersection point/node
  * http://www.geeksforgeeks.org/write-a-function-to-get-the-intersection-point-of-two-linked-lists/
@@ -530,7 +483,6 @@ int main(int c, char *a[])
     //reverseList(&head);
     //findLoop(head); // Need to test
     //printList(cloneList(head));
-    //buildRandList(&rhead, c);
 
     //removeDuplicates(&head);
     deleteKLast(&head, 5);
