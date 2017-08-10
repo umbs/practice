@@ -2,6 +2,10 @@
  *
  * The key insight here is using DP from tail to head (like a bottom up DP).
  *
+ * dp[i] - number of ways to decode string (i, end)
+ * if(charAt(i) is 0), combine with i-1 char
+ *
+ *
  * */
 public class Solution {
     public int numDecodings(String s) {

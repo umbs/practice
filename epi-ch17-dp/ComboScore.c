@@ -17,8 +17,8 @@
 int main(int argc, char *argv[]) {
 
     int numPlays = 3;
-    int plays[] = {2, 3, 7};
-    int finalScore = 12;
+    int plays[] = {1, 2, 3};
+    int finalScore = 4;
     int A[numPlays][finalScore+1];
 
     // initialize score 0 to 1. All others 0.

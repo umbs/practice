@@ -9,19 +9,13 @@
  */
 public class Solution {
     public boolean match(TreeNode s, TreeNode t) {
-        if((s==null && t!=null) || (s!=null && t==null))
-            return false;
-        if(s==null && t==null)
-            return true;
+        if(s==null || t==null)  return s==t;
         
         return s.val==t.val && match(s.left, t.left) && match(s.right, t.right);
     }
     
     public boolean isSubtree(TreeNode s, TreeNode t) {
-        if((s==null && t!=null) || (s!=null && t==null))
-            return false;
-        if(s==null && t==null)
-            return true;
+        if(s==null || t==null)  return s==t;
         
         boolean result = match(s, t);
         if(result)  return true;
