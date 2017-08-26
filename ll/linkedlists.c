@@ -16,6 +16,7 @@ typedef struct _Node {
 /* All reference to 'List' means singly linked list */
 
 Node *head;
+Node *one, *two;
 
 void printList (Node *head)
 {
@@ -26,17 +27,6 @@ void printList (Node *head)
         head = head->next;
     }
     printf("\n");
-
-#if 0
-    Node **cur = &head;
-    printf("List members: \n");
-    while(*cur) {
-        printf("cur: %p, *cur: %p, data: %d, nxt: %p\n", cur, *cur,
-                (*cur)->data, (*cur)->next);
-        cur = &((*cur)->next);
-    }
-    printf("\n");
-#endif
 }
 
 /* Print reverse of a linked list using recursion
@@ -62,7 +52,7 @@ void sortedInsert(Node **head, int data)
     nu->data = data;
     nu->next = NULL;
 
-    while (*cur && (*cur)->data < data)
+    while (*cur && data > (*cur)->data)
         cur = &((*cur)->next);
 
     nu->next = *cur;
@@ -73,17 +63,13 @@ void sortedInsert(Node **head, int data)
 void buildList (Node **head, int sz)
 {
     Node *t = NULL;
-    //int data;
-
-    srand(time(NULL));
 
     for (int i=0; i<sz; i++) {
-        t = malloc(sizeof(Node));
-        t->data = rand()%100;
-        t->next = *head;
-        *head = t;
-        //data = rand()%100;
-        //sortedInsert(head, data);
+        //t = malloc(sizeof(Node));
+        //t->data = rand()%100;
+        //t->next = *head;
+        //*head = t;
+        sortedInsert(head, rand()%100);
     }
 
     printList(*head);
@@ -461,6 +447,50 @@ Node *intersectList(Node *head1, Node *head2)
     return one;
 }
 
+/* Make sure the order or nodes is ascending */
+bool assertOrder(Node *node) {
+    Node *prev = node;
+    node = node->next;
+
+    while(node) {
+        if(prev->data > node->data)
+            return false;
+
+        node = node->next;
+    }
+
+    return true;
+}
+
+/* Merge two sorted lists in to one (the first list). Use only constant extra
+ * space */
+void mergeSortedLists(Node **one, Node **two) {
+    Node *prev1, *cur1;
+    Node *cur2;
+
+    prev1 = NULL, cur1 = *one;
+    cur2 = *two;
+
+    while(cur1 && cur2) {
+        if(cur1->data <= cur2->data) {
+            prev1 = cur1;
+            cur1 = cur1->next;
+        } else {
+            if(prev1)   prev1->next = cur2;
+            else        *one = cur2;
+
+            Node *tmp = cur2->next;
+            cur2->next = cur1;
+            prev1 = cur2;
+            cur2 = tmp;
+        }
+    }
+
+    printf("Order: %d\n", assertOrder(*one));
+
+    printList(*one);
+}
+
 int main(int c, char *a[])
 {
     if (c != 2)  {
@@ -470,7 +500,10 @@ int main(int c, char *a[])
 
     int sz = atoi(a[1]);
 
-    buildList(&head, sz);
+    srand(time(NULL));
+
+    buildList(&one, sz);
+    buildList(&two, sz);
     //printRevList(head);
 
     //sortedInsert(&head, 50);
@@ -485,7 +518,9 @@ int main(int c, char *a[])
     //printList(cloneList(head));
 
     //removeDuplicates(&head);
-    deleteKLast(&head, 5);
-    printList(head);
+    //deleteKLast(&head, 5);
+    //printList(head);
+    mergeSortedLists(&one, &two);
+
     return 1;
 }
