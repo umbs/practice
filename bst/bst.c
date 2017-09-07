@@ -159,38 +159,71 @@ void LCA(node *one, node *two) {
     printAncestors(two);
 }
 
-/* successor
- * predecessor
- * getKMaxKey
- * getKMinKey
- * */
+// Given a node, find it's successor.
+// Successor means, when printed in Inorder (ascending), the next key in the
+// order
+// Two cases determine successor
+// 1) If node has right child, it's left most child is successor
+// 2) else find an ancestor that is a left child. Return the parent.
+node *successor(node *node) {
+    if(node==NULL)  return node;
 
-// Max key in BST
-int getMaxKey(node *node) {
-    if(node == NULL)            return -1;  // invalid case
-    if(node->right == NULL)     return node->key; // max key in BST
+    // (1)
+    if(node->right) {
+        node = node->right;
+        while(node->left)   node = node->left;
+        return node;
+    }
 
-    // node has right child
-    return getMaxKey(node->right);
+    // (2)
+    while(node->parent && node != node->parent->left)   node = node->parent;
+
+    // Unique case. Node is max node.
+    if(node->parent == NULL)    return NULL;
+
+    // at this point, node == node->parent->left
+    return node->parent;
+}
+
+// Given a node, find it's predecessor.
+// Predecessor means, when printed in ascending order, the key before current
+// key.
+// Two cases determine predecessor
+// 1) If node has left child, it's right most child is predecessor
+// 2) else find an ancestor that is right child and return the parent
+node *predecessor(node *node) {
+    if(node==NULL)  return node;
+
+    // (1)
+    if(node->left) {
+        node = node->left;
+        while(node->right)  node = node->right;
+        return node;
+    }
+
+    // (2)
+    while(node->parent && node != node->parent->right)  node = node->parent;
+
+    // Node is smallest in tree
+    if(node->parent == NULL)    return NULL;
+
+    // here node == node->parent->right
+    return node->parent;
 }
 
 // Kth Max key in BST
-int getKMaxKey(node *node, int count, int K) {
-    return -1;
-}
+void getKMaxKey(node *node, int K) {
+    // NULL node doesn't mean failure
+    if(node == NULL)    return;
 
-// Min key in BST
-int getMinKey(node *node) {
-    if(node == NULL)           return -1;  // invalid case
-    if(node->left == NULL)     return node->key; // min key in BST
+    // start from max node and keep finding predecessor
+    while(node->right)   node = node->right;
 
-    // node has left child
-    return getMaxKey(node->left);
-}
+    for(int i=1; i<K; i++) {
+        node = predecessor(node);
+    }
 
-// Kth Min key in BST
-int getKMinKey(node *node) {
-    return -1;
+    printf("%dth largest: %d\n", K, node ? node->key : -1);
 }
 
 // Delete first instance of key and return 0 on success or -1 if no node with
@@ -238,20 +271,8 @@ int main() {
         insert(root, rand()%RANGE);
     }
 
-    printf("Tree, before serialization\n");
     levelorder(root);
-
-    int arr[100] = {0};
-    int sz;
-
-    serialize(root, arr, &sz);
-    printf("Size after serialization: %d\n", sz);
-
-    node *head = deserialize(arr);
-
-    printf("Tree, after serialization and deserialization\n");
-    levelorder(head);
-    printf("\n");
+    getKMaxKey(root, 3);
 
     return 0;
 }
