@@ -1,65 +1,120 @@
 // C program to demonstrate insert operation in binary search tree
-// Code is from Geeks for Geeks: 
+// Code is from Geeks for Geeks:
 // http://www.geeksforgeeks.org/binary-search-tree-set-1-search-and-insertion/
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
-struct node {
+#define MAX_Q_CAP 100
+#define SZ      15
+#define RANGE   45
+
+typedef struct node_ {
     int key;
-    struct node *left, *right;
-};
-  
+    struct node_ *left, *right, *parent;
+} node;
+
 // A utility function to create a new BST node
-struct node *newNode(int item) {
-    struct node *temp =  (struct node *)malloc(sizeof(struct node));
+node *newNode(int item) {
+    node *temp =  (node *)malloc(sizeof(node));
     temp->key = item;
-    temp->left = temp->right = NULL;
+    temp->left = temp->right = temp->parent = NULL;
     return temp;
 }
-  
+
 // A utility function to do inorder traversal of BST
-void inorder(struct node *root) {
+void inorder(node *root) {
     if (root == NULL)   return;
 
     inorder(root->left);
-    printf("%d\n", root->key);
+    printf("%d ", root->key);
+    //printf("Parent %d\n", root->parent ? root->parent->key : -1);
     inorder(root->right);
 }
 
-void preorder(struct node *root) {
+// Inorder travel using Iterative approach
+// WIP
+void inorderIter(node *root) {
     if (root == NULL)   return;
 
-    printf("%d\n", root->key);
+    node *que[MAX_Q_CAP];
+    int top = 0;
+    que[top++] = root;  // top++ is push() operation
+    root = root->left;
+}
+
+void preorder(node *root) {
+    if (root == NULL)   return;
+
+    printf("Node %d ", root->key);
+    printf("Parent %d\n", root->parent ? root->parent->key : -1);
     preorder(root->left);
     preorder(root->right);
 }
 
-void postorder(struct node *root) {
+void postorder(node *root) {
     if (root == NULL)   return;
 
     postorder(root->left);
     postorder(root->right);
-    printf("%d\n", root->key);
+    printf("Node %d ", root->key);
+    printf("Parent %d\n", root->parent ? root->parent->key : -1);
+}
+
+// Uses quick implementation of queue, without checks on bounds. Not safe, but
+// works for PoC/MVP of levelorder printing
+void levelorder(node *root) {
+    node *que[MAX_Q_CAP];
+    int head=0, tail=0; // remove from head and add to tail.
+
+    if(root==NULL)  return;
+
+    que[tail++] = root;
+    int size = tail-head;
+    int levels = 0;
+
+    while(size && size < MAX_Q_CAP) {
+        int len = tail-head;
+
+        printf("Level %d: ", levels);
+        for(int i=0; i<len && i<MAX_Q_CAP; i++) {
+            node *n = que[head++];
+
+            printf("%d(%d, %d) ", n->key, n->left? n->left->key : -1,
+                    n->right?n->right->key : -1);
+
+            if(n->left)  que[tail++] = n->left;
+            if(n->right) que[tail++] = n->right;
+        }
+        printf("\n");
+        levels++;
+
+        size = tail-head;
+    }
 }
 
 /* A utility function to insert a new node with given key in BST */
-struct node* insert(struct node* node, int key) {
+node* insert(node* node, int key) {
     /* If the tree is empty, return a new node */
     if (node == NULL) return newNode(key);
- 
+
     /* Otherwise, recur down the tree */
-    if (key < node->key)
+    if (key < node->key) {
         node->left  = insert(node->left, key);
-    else if (key >= node->key)  // duplicates on right side
-        node->right = insert(node->right, key);   
- 
+        node->left->parent = node;
+    }
+    else if (key >= node->key)  { // duplicates on right side
+        node->right = insert(node->right, key);
+        node->right->parent = node;
+    }
+
     /* return the (unchanged) node pointer */
     return node;
 }
 
 // search for node (first occurance) with 'key'
-struct node *search(struct node *node, int key) {
+node *search(node *node, int key) {
     if(node == NULL || node->key==key)  return node;
 
     // key is smaller than current node
@@ -70,14 +125,48 @@ struct node *search(struct node *node, int key) {
     return search(node->right, key);
 }
 
-/* successor 
- * predecessor 
+node *getRandomNode(node *root) {
+    int depth = (int) sqrt(SZ);
+
+    if(root == NULL)    return NULL;
+
+    while(depth) {
+        if(root->left == NULL && root->right == NULL)   return root;
+
+        if(root->left == NULL)          root = root->right;
+        else if(root->right == NULL)    root = root->left;
+        else    root = rand() % 2 ? root->right : root->left;
+
+        depth--;
+    }
+
+    return root;
+}
+
+void printAncestors(node *node) {
+    if(node == NULL)    return;
+
+    while(node) {
+        printf("%d -> ", node->key);
+        node = node->parent;
+    }
+
+    printf("NULL\n");
+}
+
+void LCA(node *one, node *two) {
+    printAncestors(one);
+    printAncestors(two);
+}
+
+/* successor
+ * predecessor
  * getKMaxKey
  * getKMinKey
  * */
 
 // Max key in BST
-int getMaxKey(struct node *node) {
+int getMaxKey(node *node) {
     if(node == NULL)            return -1;  // invalid case
     if(node->right == NULL)     return node->key; // max key in BST
 
@@ -86,21 +175,12 @@ int getMaxKey(struct node *node) {
 }
 
 // Kth Max key in BST
-int getKMaxKey(struct node *node, int count, int K) {
+int getKMaxKey(node *node, int count, int K) {
     return -1;
 }
 
-// 2nd Max key in BST
-int get2MaxKey(struct node *node, int nextMax) {
-    if(node == NULL)            return -1;  // invalid case
-    if(node->right == NULL)     return nextMax; // 2nd max key in BST
-
-    // node has right child
-    return get2MaxKey(node->right, node->key);
-}
-
 // Min key in BST
-int getMinKey(struct node *node) {
+int getMinKey(node *node) {
     if(node == NULL)           return -1;  // invalid case
     if(node->left == NULL)     return node->key; // min key in BST
 
@@ -109,52 +189,69 @@ int getMinKey(struct node *node) {
 }
 
 // Kth Min key in BST
-int getKMinKey(struct node *node) {
-    return -1; 
+int getKMinKey(node *node) {
+    return -1;
 }
 
 // Delete first instance of key and return 0 on success or -1 if no node with
-// 'key' exists 
-int delete(struct node *node, int key) {
+// 'key' exists.
+// Hibbard Deletion:
+int delete(node *node, int key) {
     if(node == NULL)    return -1;  // key not found
 
     return 0;
 }
 
+/* pre-order printing */
+void serialize(node *root, int *arr, int *sz) {
+    static int idx;
+
+    if(root==NULL)  { arr[idx++] = -1; return; }
+
+    arr[idx++] = root->key;
+
+    serialize(root->left, arr, sz);
+    serialize(root->right, arr, sz);
+
+    *sz = idx;
+}
+
+/* Input is pre-order printed array. Get a BST */
+node *deserialize(int *arr) {
+    static int idx;
+    if(arr[idx] == -1) { idx++; return NULL; }
+
+    node *n = newNode(arr[idx++]);
+    n->left = deserialize(arr);
+    n->right = deserialize(arr);
+    return n;
+}
+
 // Driver Program to test above functions
 int main() {
-#if 0
-    /* Let us create following BST
-              50
-           /     \
-          30      70
-         /  \    /  \
-       20   40  60   80 */
-    struct node *root = NULL;
-    root = insert(root, 50);
-    insert(root, 30);
-    insert(root, 20);
-    insert(root, 40);
-    insert(root, 70);
-    insert(root, 60);
-    insert(root, 80);
-#endif
-
     srand(time(NULL));
 
-    struct node *root = NULL;
-    root = insert(root, rand()%100);
+    node *root = NULL;
+    root = insert(root, rand()%RANGE);
 
-    for (int i=0; i<15; i++) {
-        insert(root, rand()%45);
+    for (int i=0; i<SZ; i++) {
+        insert(root, rand()%RANGE);
     }
 
-    // print inoder traversal of the BST
-    inorder(root);
+    printf("Tree, before serialization\n");
+    levelorder(root);
 
-    printf("2nd Max: %d\n", get2MaxKey(root->right, root->key));
+    int arr[100] = {0};
+    int sz;
 
-    //printf("Searching for 22: %s\n", search(root, 22)==NULL ? "Not Found" : "Found"); 
-    
+    serialize(root, arr, &sz);
+    printf("Size after serialization: %d\n", sz);
+
+    node *head = deserialize(arr);
+
+    printf("Tree, after serialization and deserialization\n");
+    levelorder(head);
+    printf("\n");
+
     return 0;
 }
