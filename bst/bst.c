@@ -10,6 +10,8 @@
 #define SZ      15
 #define RANGE   45
 
+#define max(x, y)   ((x) > (y) ? (x) : (y))
+
 typedef struct node_ {
     int key;
     struct node_ *left, *right, *parent;
@@ -226,6 +228,19 @@ void getKMaxKey(node *node, int K) {
     printf("%dth largest: %d\n", K, node ? node->key : -1);
 }
 
+int longestBranch(node *node, int len) {
+    static int depth;
+
+    if(node == NULL)    return 0;
+
+    depth = max(depth, len);
+
+    longestBranch(node->left, len+1);
+    longestBranch(node->right, len+1);
+
+    return depth;
+}
+
 // Delete first instance of key and return 0 on success or -1 if no node with
 // 'key' exists.
 // Hibbard Deletion:
@@ -272,7 +287,8 @@ int main() {
     }
 
     levelorder(root);
-    getKMaxKey(root, 3);
+    //getKMaxKey(root, 3);
+    printf("Depth: %d\n", longestBranch(root, 0));
 
     return 0;
 }
