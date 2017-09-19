@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <string.h>
 
 #define MAX_Q_CAP 100
 #define SZ      15
@@ -33,17 +34,6 @@ void inorder(node *root) {
     printf("%d ", root->key);
     //printf("Parent %d\n", root->parent ? root->parent->key : -1);
     inorder(root->right);
-}
-
-// Inorder travel using Iterative approach
-// WIP
-void inorderIter(node *root) {
-    if (root == NULL)   return;
-
-    node *que[MAX_Q_CAP];
-    int top = 0;
-    que[top++] = root;  // top++ is push() operation
-    root = root->left;
 }
 
 void preorder(node *root) {
@@ -94,6 +84,94 @@ void levelorder(node *root) {
 
         size = tail-head;
     }
+}
+
+// Inorder travel, non-recursive approach
+void inorderNR(node *root) {
+    if (root == NULL)   return;
+
+    // works like a stack
+    node *que[MAX_Q_CAP];
+    int top = 0;
+
+    node *n = root;
+
+    while(top != 0 || n != NULL) {
+        // push all nodes on to stack
+        if(n != NULL) {
+            que[top++] = n;
+            n = n->left;
+        } else {
+            n = que[--top];
+            printf("%d, ", n->key);
+            n = n->right;
+        }
+    }
+
+    printf("\n");
+}
+
+void preorderNR(node *root) {
+    if (root == NULL)   return;
+
+    node *que[MAX_Q_CAP];
+    int top = 0;
+    que[top++] = root;
+
+    while(top) {
+        root = que[--top];
+        printf("%d ", root->key);
+
+        if(root->right) {
+            que[top++] = root->right;
+        }
+
+        if(root->left) {
+            que[top++] = root->left;
+        }
+    }
+    printf("\n");
+}
+
+void postorderNR(node *root) {
+    if (root == NULL)   return;
+
+    node *que[MAX_Q_CAP];
+    int top = 0;
+    que[top++] = root;
+
+    while(top) {
+        node *n = que[top-1];
+        if(n->left == NULL && n->right == NULL) {
+            printf("%d ", n->key);
+            top--;
+        } else {
+            if(n->right) {
+                que[top++] = n->right;
+                n->right = NULL;
+            }
+
+            if(n->left) {
+                que[top++] = n->left;
+                n->left = NULL;
+            }
+        }
+    }
+    printf("\n");
+}
+
+// Given an array in inorder form, build a BT (will be BST if array consists of
+// ascending numbers)
+// Array size is [lo, hi] inclusive
+node *inorderToBT(int *arr, int lo, int hi) {
+    if(lo > hi) return NULL;
+
+    int mid = lo + (hi-lo)/2;
+    node *root  = newNode(arr[mid]);
+    root->left  = inorderToBT(arr, lo, mid-1);
+    root->right = inorderToBT(arr, mid+1, hi);
+
+    return root;
 }
 
 /* A utility function to insert a new node with given key in BST */
@@ -275,6 +353,47 @@ node *deserialize(int *arr) {
     return n;
 }
 
+static char arr[16][64];
+
+void findTreeWidth(node *root, int *min, int *max, int dist) {
+    if(root==NULL)  return;
+
+    if(dist < *min) {
+        *min = dist;
+    } else if(dist > *max) {
+        *max = dist;
+    }
+
+    findTreeWidth(root->left, min, max, dist-1);
+    findTreeWidth(root->right, min, max, dist+1);
+}
+
+void verticalHelper(node *root, int level) {
+
+    if(root==NULL)  return;
+
+    char buf[8] = {0};
+    snprintf(buf, 8, "%d, ", root->key);
+    strcat(arr[level], buf);
+
+    verticalHelper(root->left, level-1);
+    verticalHelper(root->right, level+1);
+}
+
+void vertical(node *root) {
+    int min=0, max=0;
+
+    findTreeWidth(root, &min, &max, 0);
+
+    printf("min: %d, max: %d\n", min, max);
+
+    verticalHelper(root, -min);
+
+    for(int i=0; i<=max-min; i++) {
+        printf("%s\n", arr[i]);
+    }
+}
+
 // Driver Program to test above functions
 int main() {
     srand(time(NULL));
@@ -288,7 +407,21 @@ int main() {
 
     levelorder(root);
     //getKMaxKey(root, 3);
-    printf("Depth: %d\n", longestBranch(root, 0));
+    //printf("Depth: %d\n", longestBranch(root, 0));
+    //inorder(root);
+    //printf("\n");
+    //inorderNR(root);
+
+    //int arr[] = {3, 8, 8, 9, 11, 12, 13, 13, 22, 24, 25, 27, 27, 32, 35, 40};
+    //node *root = inorderToBT(arr, 0, 15);
+    //levelorder(root);
+
+    //preorderNR(root);
+    //postorderNR(root);
+
+    printf("\n\n");
+
+    vertical(root);
 
     return 0;
 }
