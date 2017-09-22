@@ -6,6 +6,10 @@
 #include <time.h>
 #include <math.h>
 #include <string.h>
+#include <unistd.h>
+
+#include <sys/socket.h>
+#include <sys/types.h>
 
 #define MAX_Q_CAP 100
 #define SZ      15
@@ -172,6 +176,34 @@ node *inorderToBT(int *arr, int lo, int hi) {
     root->right = inorderToBT(arr, mid+1, hi);
 
     return root;
+}
+
+// lo and hi are inclusive
+// Assume key is present
+int searchArray(int in[], int lo, int hi, int key) {
+    for(int i=lo; i<=hi; i++) {
+        if(in[i] == key)    return i;
+    }
+
+    return 0;
+}
+
+// Given two arrays (inorder and preorder), build a binary tree from it
+// [lo, hi] are array indices for inorder array (both inclusive)
+node *in_pre_BT(int in[], int pre[], int lo, int hi) {
+    static int preIdx = 0;
+
+    int key = pre[preIdx++];
+    node *n = newNode(key);
+
+    if(lo >= hi)    return n;
+
+    int inIdx = searchArray(in, lo, hi, key);
+
+    n->left = in_pre_BT(in, pre, lo, inIdx-1);
+    n->right = in_pre_BT(in, pre, inIdx+1, hi);
+
+    return n;
 }
 
 /* A utility function to insert a new node with given key in BST */
@@ -396,16 +428,16 @@ void vertical(node *root) {
 
 // Driver Program to test above functions
 int main() {
-    srand(time(NULL));
+    //srand(time(NULL));
 
-    node *root = NULL;
-    root = insert(root, rand()%RANGE);
+    //node *root = NULL;
+    //root = insert(root, rand()%RANGE);
 
-    for (int i=0; i<SZ; i++) {
-        insert(root, rand()%RANGE);
-    }
+    //for (int i=0; i<SZ; i++) {
+    //    insert(root, rand()%RANGE);
+    //}
 
-    levelorder(root);
+    //levelorder(root);
     //getKMaxKey(root, 3);
     //printf("Depth: %d\n", longestBranch(root, 0));
     //inorder(root);
@@ -419,9 +451,21 @@ int main() {
     //preorderNR(root);
     //postorderNR(root);
 
-    printf("\n\n");
+    //printf("\n\n");
 
-    vertical(root);
+    //vertical(root);
+
+#if 0
+    int in[] = {68, 66, 69, 65, 70, 67};
+    int pre[] = {65, 66, 68, 69, 67, 70};
+    int len = sizeof(in)/sizeof(in[0]);
+    node *root = in_pre_BT(in, pre, 0, len - 1);
+
+    /* Let us test the built tree by printing Insorder traversal */
+    printf("Inorder traversal of the constructed tree is \n");
+    inorder(root);
+    getchar();
+#endif
 
     return 0;
 }
