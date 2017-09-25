@@ -1,8 +1,6 @@
-/* Find intersection of two unsorted arrays.
- *
- * Runtime: O(NlogN) + O(MlogM) + O(N+M)
- * Space: O(1)
- */
+#include <stdio.h>
+#include <stdlib.h>
+
 int cmp(const void *a, const void *b) {
     return *(int *)a - *(int *)b;
 }
@@ -11,7 +9,7 @@ int cmp(const void *a, const void *b) {
  * Note: The returned array must be malloced, assume caller calls free().
  */
 
-int* intersection(int* nums1, int nums1Size, int* nums2, int nums2Size, int* returnSize) {
+int* intersect(int* nums1, int nums1Size, int* nums2, int nums2Size, int* returnSize) {
 
     #define n1 nums1Size
     #define n2 nums2Size
@@ -24,8 +22,15 @@ int* intersection(int* nums1, int nums1Size, int* nums2, int nums2Size, int* ret
     qsort(nums1, n1, sizeof(int), cmp);
     qsort(nums2, n2, sizeof(int), cmp);
 
+    for(int i=0; i<n1; i++)
+        printf("%d ", nums1[i]);
+    printf("\n");
+
+    for(int i=0; i<n2; i++)
+        printf("%d ", nums2[i]);
+    printf("\n");
+
     int i=0, j=0, k=0;
-    int lastElem = nums1[0];
 
     while(i<n1 && j<n2) {
         if(nums1[i] < nums2[j])
@@ -33,15 +38,25 @@ int* intersection(int* nums1, int nums1Size, int* nums2, int nums2Size, int* ret
         else if(nums1[i] > nums2[j])
             j++;
         else {
-            if(k==0 || result[k-1] != nums1[i]) {
-                result[k] = nums1[i];
-                k++;
-            }
-            i++; j++;
+            result[k] = nums1[i];
+            i++; j++; k++;
         }
     }
 
     *rs = k;
 
     return result;
+}
+
+void main() {
+   int num1[] = {-2147483648,1,2,3};
+   int num2[] = {1,-2147483648,-2147483648};
+
+   int rs; 
+   int *result = intersect(num1, 4, num2, 3, &rs);
+
+   for(int i=0; i<rs; i++) {
+       printf("%d ", result[i]);
+   }
+   printf("\n");
 }
