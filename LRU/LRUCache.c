@@ -81,14 +81,15 @@ void moveToStart(node **head, node *n) {
     *head = n;
 }
 
-void LRUCacheInit(int size) {
+void LRUCacheInit(int capacity) {
     cache = malloc(sizeof(LRUCache));
     assert(cache != NULL);  // abort if cache init fails
 
     cache->head = NULL;
     cache->tail = NULL;
     cache->hash = NULL;
-    cache->size = size;
+    cache->size = 0;
+    cache->capacity = capacity;
 }
 
 void LRUCachePrint(LRUCache *cache) {
@@ -117,8 +118,8 @@ int LRUCachePut(LRUCache *cache, int key) {
     }
 
     // cache full. Eviction! Last node in LRU
-    if(cache->size == CACHE_SIZE) {
-        // get the tail ptr and correct it
+    if(cache->size == cache->capacity) {
+        // correct tail pointer and free last element
         node *tmp = cache->tail;
         cache->tail = cache->tail->prev;
 

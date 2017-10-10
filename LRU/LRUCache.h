@@ -5,7 +5,7 @@
 
 #include "uthash.h"
 
-#define RANGE 2
+#define RANGE 20
 #define CACHE_SIZE  15
 
 #define SUCCESS 0
@@ -29,6 +29,7 @@ typedef struct LRUCache_ {
     node    *tail;
     KV      *hash;
     int     size;
+    int     capacity;
 } LRUCache;
 
 extern LRUCache *cache;
