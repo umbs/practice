@@ -66,8 +66,6 @@ void delete(node **head, int key) {
 // move node 'n' to head of the list
 static
 void moveToStart(node **head, node *n) {
-    if(*head == NULL)   return;
-
     if(n->prev) {
         n->prev->next = n->next;
     }
@@ -83,15 +81,14 @@ void moveToStart(node **head, node *n) {
     *head = n;
 }
 
-void LRUCacheInit(int capacity) {
+void LRUCacheInit(int size) {
     cache = malloc(sizeof(LRUCache));
     assert(cache != NULL);  // abort if cache init fails
 
     cache->head = NULL;
     cache->tail = NULL;
     cache->hash = NULL;
-    cache->size = 0;
-    cache->capacity = capacity;
+    cache->size = size;
 }
 
 void LRUCachePrint(LRUCache *cache) {
@@ -107,29 +104,28 @@ void LRUCachePrint(LRUCache *cache) {
 // a cache entry)
 // If key doesn't exist, check if cache is full:
 //      if full
-//          evict last element
+//          evict last element 
 //      add element at start
 int LRUCachePut(LRUCache *cache, int key) {
     assert(cache != NULL);
     node *head = cache->head;
 
-    // if key exists, move it to front of list
-    node *tmp = get(cache, key);
-    if(tmp != NULL) {
-        //moveToStart(&cache->head, tmp);
+    //[1] if key exists nothing to do (or should be it be moved to front of the
+    //list?)
+    if(get(cache, key) != NULL) {
         return SUCCESS;
     }
 
     // cache full. Eviction! Last node in LRU
-    if(cache->size == cache->capacity) {
-        // correct tail pointer and free last element
+    if(cache->size == CACHE_SIZE) {
+        // get the tail ptr and correct it
         node *tmp = cache->tail;
         cache->tail = cache->tail->prev;
 
         KV *del;
         HASH_FIND_INT(cache->hash, &tmp->key, del);
         if(del) {
-            HASH_DEL(cache->hash, del);
+            HASH_DEL(cache->hash, del); 
         }
         free(tmp);
         cache->size--;

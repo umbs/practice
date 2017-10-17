@@ -65,11 +65,11 @@ void buildList (Node **head, int sz)
     Node *t = NULL;
 
     for (int i=0; i<sz; i++) {
-        //t = malloc(sizeof(Node));
-        //t->data = rand()%100;
-        //t->next = *head;
-        //*head = t;
-        sortedInsert(head, rand()%100);
+        t = malloc(sizeof(Node));
+        t->data = rand()%10;
+        t->next = *head;
+        *head = t;
+        //sortedInsert(head, rand()%100);
     }
 
     printList(*head);
@@ -94,6 +94,45 @@ void removeDuplicates (Node **head)
 
         cur = &((*cur)->next);
     }
+}
+
+Node *removeDuplicates2(Node *head) {
+
+    // print the whole list
+    Node *tmp = head;
+    while(tmp) {
+        printf("%d ", tmp->data);
+        tmp = tmp->next;
+    }
+    printf("\n");
+
+    /* The range of elements is from 0 to 100 (both inclusive). Use a counter
+    array as hashtable. Index is key and dataue is number of times the index
+    has occurred, initialized to 0 */
+    int hash[101] = {0};
+
+    Node *prev = head, *cur = head->next;
+    hash[prev->data] = 1;
+
+    // walk till end of the list
+    while(cur) {
+        // duplicate
+        if(hash[cur->data] == 1) {
+            printf("Duplicate: %d\n", cur->data);
+            prev->next = cur->next;
+            Node *tmp = cur;
+            cur = cur->next;
+            free(tmp);
+        }
+        // first occurance
+        else {
+            hash[cur->data] = 1;
+            prev = cur;
+            cur = cur->next;
+        }
+    }
+
+    return head;
 }
 
 /* Return size of a list */
@@ -502,8 +541,7 @@ int main(int c, char *a[])
 
     srand(time(NULL));
 
-    buildList(&one, sz);
-    buildList(&two, sz);
+    buildList(&head, sz);
     //printRevList(head);
 
     //sortedInsert(&head, 50);
@@ -520,7 +558,9 @@ int main(int c, char *a[])
     //removeDuplicates(&head);
     //deleteKLast(&head, 5);
     //printList(head);
-    mergeSortedLists(&one, &two);
+    //mergeSortedLists(&one, &two);
+    printList(removeDuplicates2(head));
+
 
     return 1;
 }
