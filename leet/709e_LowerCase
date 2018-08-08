@@ -1,0 +1,25 @@
+class Solution(object):
+    def toLowerCase(self, str):
+        """
+        :type str: str
+        :rtype: str
+        """
+
+       # return str.lower()
+       #
+       # low = [c.lower() for c in str]
+       #
+       # return ''.join(low)
+
+        # result = []
+        #
+        # for c in str:
+        #     if 'A' <= c <= 'Z':
+        #         result.append(chr(ord(c)+32))
+        #     else:
+        #         result.append(chr(ord(c)))
+
+        return ''.join(chr(ord(c)+32) if 'A' <= c <= 'Z' else chr(ord(c)) for c in str)
+
+s = Solution()
+print s.toLowerCase("Hello World")
