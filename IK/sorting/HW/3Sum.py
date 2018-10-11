@@ -1,5 +1,4 @@
-import random
-
+import sys
 
 def findPairAddsToK(arr, K, start, end):
     '''
@@ -49,11 +48,25 @@ def findZeroSum(arr):
             triplet.extend(p)
             res.append(triplet)
 
-    # print in a way required by output
-    for r in res:
-        print(','.join(str(e) for e in r))
+    result = [','.join(str(e) for e in r) for r in res]
+
+    return result
 
 
 if __name__ == "__main__":
-    arr = [random.randint(-10, 10) for _ in range(10)]
-    findZeroSum(arr)
+    f = sys.stdout
+
+    arr_size = int(input())
+
+    arr = []
+    for _ in range(arr_size):
+        arr_item = int(input())
+        arr.append(arr_item)
+
+    res = findZeroSum(arr)
+
+    f.write("\n".join(res))
+
+    f.write('\n')
+
+    f.close()
