@@ -1,0 +1,24 @@
+
+
+TRIE
+---
+- a.k.a Prefix Tree
+- Can be implemented using Hash of Hash
+
+
+
+class TrieNode(object):
+  def __init__(self):
+    self.children = {}
+    self.end_of_word = False
+
+
+class Trie(object):
+  def __init__(self):
+    self.root = TrieNode()
+
+
+Methods on Trie:
+    * ADD WORD
+    * MEMBERSHIP (a word exists?)
+    * FIND WORD

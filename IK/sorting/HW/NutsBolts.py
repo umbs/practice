@@ -24,12 +24,11 @@ def partition(arr, pivot, start, end):
 
 def solve(nuts, bolts):
 
-    sz = len(nuts)
     pivot = nuts[0]
     start = 0
-    end = sz-1
+    end = len(nuts)-1
 
-    for i in range(sz):
+    for i in range(0, len(nuts)):
         pos = partition(bolts, pivot, start, end)
         pivot = nuts[pos]
 
