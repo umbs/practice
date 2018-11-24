@@ -3,10 +3,10 @@ def subsets(s, start, substr, res):
         res.append(substr)
         return
 
-    # with the char at start index
-    subsets(s, start+1, substr+s[start], res)
     # without the char at start index
     subsets(s, start+1, substr, res)
+    # with the char at start index
+    subsets(s, start+1, substr+s[start], res)
 
 def generate_all_subsets(s):
     res = []
@@ -15,5 +15,5 @@ def generate_all_subsets(s):
     return res
 
 if __name__ == "__main__":
-    s = "xyz"
+    s = "abc"
     print(generate_all_subsets(s))

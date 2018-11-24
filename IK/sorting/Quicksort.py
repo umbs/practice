@@ -18,8 +18,8 @@ def partition(arr, start, end, p_idx):
       +----------+-+----------+-+--------------+-+
       |   <=     | |   >      | |    ??        | |
       +----------+-+----------+-+--------------+-+
-                  ^            ^                      ^
-                  le           cur                   end
+                  ^            ^                ^
+                  le           cur             end
     le = all elements less than or equal to pivot. It points to the next
          position an element must go if it is <= pivot
     cur = currently examining element
