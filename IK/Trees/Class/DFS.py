@@ -1,13 +1,14 @@
 class Node:
     def __init__(self, data):
         self.data = data
-        self.kids = {}  # dictionary with data = key and Node = value
+        self.kids = set()
 
 
-class Graph:
+class Tree:
 
     def add_edge(self, a, b):
-        pass
+        a.kids.add(b)
+        b.kids.add(a)
 
     # iterative approach
     def dfs_iter(self, root):
@@ -49,4 +50,4 @@ class Graph:
 
 
 if __name__ == "__main__":
-    graph = Graph()
+    tree = Tree()
