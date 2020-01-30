@@ -1,6 +1,6 @@
 """
 Source:
-hps://leecode.com/problems/find-he-duplicae-number/discuss/72844/Two-Soluions-(wih-explanaion):-O(nlog(n))-and-O(n)-ime-O(1)-space-wihou-changing-he-inpu-array
+https://leetcode.com/problems/find-the-duplicate-number/discuss/72844/Two-Soluions-(with-explanaion):-O(nlog(n))-and-O(n)-time-O(1)-space-without-changing-the-input-array
 """
 
 
