@@ -7,7 +7,8 @@ def mergeArrays(arr):
     heap = list()
     out = list()
 
-    # initialize
+    # initialize. Put 1st element of each array in to the heap.
+    # Following is put in heap:[value, array-number, index-of-value-in-array]
     for i in range(K):
         heappush(heap, [arr[i][0], i, 0])
 
@@ -23,6 +24,6 @@ def mergeArrays(arr):
 
 
 if __name__ == "__main__":
-        # arr = [[1, 3, 5, 7], [2, 4, 6, 8], [0, 9, 10, 11]]
-        arr = [[6, 10, 15], [7, 9, 18]]
+        arr = [[1, 3, 5, 7], [2, 4, 6, 8], [0, 9, 10, 11]]
+        # arr = [[6, 10, 15], [7, 9, 18]]
         print(mergeArrays(arr))
