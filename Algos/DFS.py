@@ -3,7 +3,7 @@
 
 
 # Recursive approach
-def dfs(s):
+def dfs(Graph, s):
     s.visited = True
 
     # Do something here
