@@ -27,7 +27,6 @@ class Solution(object):
         :type wordList: List[str]
         :rtype: int
         """
-        self.maxLen = len(beginWord)
         self.helper(beginWord, endWord, 0, 0, wordList)
 
         return self.minTrans
