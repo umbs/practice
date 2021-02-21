@@ -1,0 +1,18 @@
+n = int(input())
+s = list()
+
+ans = 1 
+for i in range(n):
+    s.append(input())
+
+# Solution from Anand Oza
+# https://www.youtube.com/watch?v=s5gU2oW8hCk&t=1012s
+# This DP comment is good too.
+def recurse(s, n):
+    global ans
+    for i in range(n):
+        if s[i] == 'OR':
+            ans += 1 << (i+1)
+
+recurse(s, n)
+print(ans)
