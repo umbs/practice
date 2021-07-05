@@ -15,9 +15,9 @@ class Solution:
         self.total = 0
 
     def deepestLeavesSum(self, root: TreeNode) -> int:
-        return self.deepSum(root, 0)
+        return self.deepSumDFS(root, 0)
 
-    def deepSum(self, node: TreeNode, depth: int) -> int:
+    def deepSumDFS(self, node: TreeNode, depth: int) -> int:
         if not node:
             return 0
 
@@ -31,8 +31,25 @@ class Solution:
             else:
                 pass
 
-        self.deepSum(node.left, depth+1)
-        self.deepSum(node.right, depth+1)
+        self.deepSumDFS(node.left, depth+1)
+        self.deepSumDFS(node.right, depth+1)
 
         return self.total
+
+    def deepSumBFS(self, node: TreeNode, depth: int) -> int:
+        qu = deque()
+        qu.append(node)
+        while qu:
+            add, sz = 0, len(qu)
+            while sz:
+                node = qu.popleft()
+                add += node.val
+                if node.left:
+                    qu.append(node.left)
+                if node.right:
+                    qu.append(node.right)
+
+                sz -= 1
+
+        return add
 
