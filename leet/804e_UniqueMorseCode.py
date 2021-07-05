@@ -5,13 +5,14 @@ class Solution(object):
         :rtype: int
         """
         morse = [".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."]
-        list = []
+        cnt = set()
 
         for word in words:
-            mc = ""
+            mc = [] 
             for c in word:
-                mc = mc + morse[ord(c)-ord('a')]
-            print(mc)
+                mc.append(morse[ord(c)-ord('a')])
+            cnt.add(''.join(mc))
+        return len(cnt)
 
 s = Solution()
-s.uniqueMorseRepresentations("abc")
+print(s.uniqueMorseRepresentations(["gin", "zen", "gig", "msg"]))
