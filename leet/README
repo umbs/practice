@@ -1,0 +1,6 @@
+Build spatial data structure to answer questions like: How many points lie
+within a Circle
+    Quadtree
+    KD-Tree
+    2D-Tree
+    Vantage-Point Tree
