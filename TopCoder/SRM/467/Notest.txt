@@ -1,0 +1,23 @@
+ShorterSuperSum:
+- Some reason, using a matrix to save already calculated sum of (k, n)
+  isn't working. 
+- Having totalSum as follows is also not working: 
+
+       for (i=1; i<=n; i++) 
+           totalSum += calculate(k-1, i); 
+       
+       Instead, calculating totalSum at terminating condition worked. Why
+       is this so? 
+
+       if (k==0) {
+           totalSum += n; 
+           return n; 
+       } 
+
+- Interesting Properties: 
+  f(k, n) = f(k-1, n) + f(k, n-1) // In a 2x2 matrix, this is sum of left
+  and top elements. This can be used in DP.  
+
+- Running Time? 
+  - For f(1, n), f() is called n times. 
+  - For f(2, n), f() is called 
